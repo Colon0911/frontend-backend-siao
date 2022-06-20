@@ -1,0 +1,6 @@
+config -> add 2 expiresIn
+only send token to frontend and get data decodeing it
+add token to user model
+
+$oor mongoose
+some js
