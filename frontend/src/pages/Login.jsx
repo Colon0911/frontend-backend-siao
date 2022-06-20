@@ -1,116 +1,129 @@
-import {useState} from 'react'
-import {Link} from 'react-router-dom'
-import axios from 'axios'
-import {Formik, Form, Field} from 'formik'
-import * as Yup from 'yup'
-import '../build/css/app.css'
-import {useAuth} from '../hooks/useAuth'
-import {loginUser} from '../services/userService'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import "../build/css/app.css";
+import { useAuth } from "../hooks/useAuth";
+import { loginUser } from "../services/userService";
 
 const Login = () => {
-	const {login} = useAuth()
+  const { login } = useAuth();
 
-	const inicioSeccionShema = Yup.object().shape({
-		email: Yup.string().email('Email no valido').required('El email es obligatorio'),
-		password: Yup.string().required('Es requerida la contraseña')
-	})
-	///
-	const [validUsuario, setvalidUsuario] = useState()
+  const inicioSeccionShema = Yup.object().shape({
+    emailOrUser: Yup.lazy((value = "") =>
+      value.includes("@")
+        ? Yup.string()
+            .email("Email no valido")
+            .required("Este campo es obligatorio")
+            .typeError("Este campo es obligatorio")
+        : Yup.string().required("Este campo es obligatorio")
+    ),
+    password: Yup.string().required("Es requerida la contraseña"),
+  });
+  ///
+  const [validUsuario, setvalidUsuario] = useState();
 
-	///
-	const handleSubmit = async values => {
-		await loginUser(values)
-			.then(res => {
-				console.log(res.data.token)
-				if (res.status === 200) {
-					setvalidUsuario(true)
-					login(res.data.token, res.data.email)
-				}
-			})
-			.catch(err => {
-				console.log(err)
-				if (res.response.status === 401) {
-					setvalidUsuario(false)
-				}
-			})
-	}
-	///
+  ///
+  const handleSubmit = async (values) => {
+    let object = {
+      emailOrUser: values.emailOrUser,
+      password: values.password,
+    };
+    try {
+      let responseLogin = await loginUser(object);
+      console.log(responseLogin);
 
-	return (
-		<>
-			<Formik
-				initialValues={{
-					email: '',
-					password: ''
-				}}
-				onSubmit={values => {
-					handleSubmit(values)
-				}}
-				validationSchema={inicioSeccionShema}
-			>
-				{({errors, touched}) => {
-					return (
-						<div className="senara-dashboard">
-							<Form className="senara-content-sm-login ">
-								<div className="senara-logo">
-									<div className="senara-img-logo" alt="" />
-								</div>
+      if (responseLogin.status === 200) {
+        setvalidUsuario(true);
 
-								<p className="senara-tagline">Iniciar Sesion</p>
-								<p className="senara-description-page">Ingrese sus credenciales</p>
+        setTimeout(() => {
+          login(responseLogin.data.token, responseLogin.data.email);
+        }, 2000);
+      }
+    } catch (error) {
+      setvalidUsuario(false);
+    }
+  };
+  ///
 
-								{errors.email && touched.email ? (
-									<>
-										<a>{errors.email}</a>
-									</>
-								) : null}
+  return (
+    <>
+      <Formik
+        initialValues={{
+          emailOrUser: "",
+          password: "",
+        }}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
+        validationSchema={inicioSeccionShema}
+      >
+        {({ errors, touched }) => {
+          return (
+            <div className="senara-dashboard">
+              <Form className="senara-content-sm-login ">
+                <div className="senara-logo">
+                  <div className="senara-img-logo" alt="" />
+                </div>
 
-								<Field
-									id="email"
-									type="email"
-									className="loating-input:focus~.bar"
-									placeholder="Usuario o Correo"
-									name="email"
-								/>
+                <p className="senara-tagline">Iniciar Sesion</p>
+                <p className="senara-description-page">
+                  Ingrese sus credenciales
+                </p>
 
-								{errors.password && touched.password ? (
-									<>
-										<a> {errors.password} </a>
-									</>
-								) : null}
-								<Field
-									id="password"
-									type="password"
-									className="loating-input:focus~.bar"
-									placeholder="Contraseña"
-									name="password"
-								/>
+                {errors.emailOrUser && touched.emailOrUser ? (
+                  <>
+                    <a>{errors.emailOrUser}</a>
+                  </>
+                ) : null}
 
-								<button className="senara-btn-primary" type="submit">
-									Iniciar Sección
-								</button>
+                <Field
+                  id="emailOrUser"
+                  type="text"
+                  className="loating-input:focus~.bar"
+                  placeholder="Usuario o Correo"
+                  name="emailOrUser"
+                />
 
-								<div className="senara-actions">
-									<Link to="/register"> Crear Cuenta </Link>
-									<Link to="/forget-password"> ¿Olvidó la contraseña? </Link>
-								</div>
-							</Form>
+                {errors.password && touched.password ? (
+                  <>
+                    <a> {errors.password} </a>
+                  </>
+                ) : null}
+                <Field
+                  id="password"
+                  type="password"
+                  className="loating-input:focus~.bar"
+                  placeholder="Contraseña"
+                  name="password"
+                />
 
-							<footer className="senara-footer-decoration">
-								<div className="decoration-logo"></div>
-							</footer>
-						</div>
-					)
-				}}
-			</Formik>
+                <button className="senara-btn-primary" type="submit">
+                  Iniciar Sección
+                </button>
 
-			{validUsuario === true ? (
-				<p className="alert-senara success">Inicio de seccion exitoso</p>
-			) : validUsuario === false ? (
-				<p className="alert-senara error">Usuario o contraseña incorrecta</p>
-			) : null}
-		</>
-	)
-}
+                <div className="senara-actions">
+                  <Link to="/register"> Crear Cuenta </Link>
+                  <Link to="/forget-password"> ¿Olvidó la contraseña? </Link>
+                </div>
+              </Form>
 
-export default Login
+              <footer className="senara-footer-decoration">
+                <div className="decoration-logo"></div>
+              </footer>
+            </div>
+          );
+        }}
+      </Formik>
+
+      {validUsuario === true ? (
+        <p className="alert-senara success">Inicio de seccion exitoso</p>
+      ) : validUsuario === false ? (
+        <p className="alert-senara error">Usuario o contraseña incorrecta</p>
+      ) : null}
+    </>
+  );
+};
+
+export default Login;
