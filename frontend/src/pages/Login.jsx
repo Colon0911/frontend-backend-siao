@@ -31,14 +31,14 @@ const Login = () => {
       password: values.password,
     };
     try {
-      let responseLogin = await loginUser(object);
-      console.log(responseLogin);
+      let res = await loginUser(object);
+      console.log(res);
 
-      if (responseLogin.status === 200) {
+      if (res.status === 200) {
         setvalidUsuario(true);
 
         setTimeout(() => {
-          login(responseLogin.data.token, responseLogin.data.email);
+          login(res.data.token, res.data.fullName);
         }, 2000);
       }
     } catch (error) {
