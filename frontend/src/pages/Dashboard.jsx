@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDoorOpen } from "@fortawesome/free-solid-svg-icons";
+import { faDoorOpen, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
@@ -59,9 +59,59 @@ const Dashboard = () => {
       </div>
       <div className="senara-dashboard">
         <div className="senara-content-menu">
-          <div className="senara-content">Form1</div>
-          <div className="senara-content">Form2</div>
-          <div className="senara-content">Form3</div>
+          <div className="senara-content">
+            <FontAwesomeIcon
+              icon={faCalendarCheck}
+              size="3x"
+              color="#07392a"
+            ></FontAwesomeIcon>
+            <div
+              style={{
+                cursor: "pointer",
+                color: "#07392a",
+                fontSize: "2rem",
+                textAlign: "center",
+              }}
+            >
+              Form1
+            </div>
+          </div>
+
+          <div className="senara-content">
+            <FontAwesomeIcon
+              icon={faCalendarCheck}
+              size="3x"
+              color="#07392a"
+            ></FontAwesomeIcon>
+            <div
+              style={{
+                cursor: "pointer",
+                color: "#07392a",
+                fontSize: "2rem",
+                textAlign: "center",
+              }}
+            >
+              Form2
+            </div>
+          </div>
+
+          <div className="senara-content">
+            <FontAwesomeIcon
+              icon={faCalendarCheck}
+              size="3x"
+              color="#07392a"
+            ></FontAwesomeIcon>
+            <div
+              style={{
+                cursor: "pointer",
+                color: "#07392a",
+                fontSize: "2rem",
+                textAlign: "center",
+              }}
+            >
+              Form3
+            </div>
+          </div>
         </div>
       </div>
     </>
